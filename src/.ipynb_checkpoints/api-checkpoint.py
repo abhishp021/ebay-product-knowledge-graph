@@ -155,3 +155,60 @@ def search_by_feature(feature: str, limit: int = 10):
         "matches": sorted_results[:limit],
         "count": len(sorted_results)
     }
+
+@app.get("/recommend")
+def recommend_by_query(query: str, top_k: int = 5):
+    # Step 1: Finding best-matching product
+    product_nodes = [n for n, attr in G.nodes(data=True) if attr["type"] == "product"]
+    
+    best_match = None
+    highest_score = 0
+
+    for node in product_nodes:
+        title = G.nodes[node]["title"]
+        score = fuzz.partial_ratio(query.lower(), title.lower())
+        if score > highest_score:
+            highest_score = score
+            best_match = node
+
+    if not best_match:
+        raise HTTPException(status_code=404, detail="No matching product found")
+
+    # Step 2: Finding similar products by shared entities
+    product_entities = {nbr for nbr in G.neighbors(best_match) if G.nodes[nbr]['type'] == 'entity'}
+    
+    scores = {}
+    print("Entities of matched product:", product_entities)
+
+    for entity in product_entities:
+        print("Entity:", entity)
+        print("Connected products:")
+        for neighbor in G.neighbors(entity):
+            if G.nodes[neighbor]["type"] == "product":
+                print(" ->", neighbor, G.nodes[neighbor]["title"])
+    
+    for entity in product_entities:
+        for neighbor in G.neighbors(entity):
+            if neighbor.startswith("product_") and neighbor != best_match:
+                scores[neighbor] = scores.get(neighbor, 0) + 1
+
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+
+    recommendations = [
+        {
+            "product_id": pid,
+            "title": G.nodes[pid]["title"],
+            "shared_entity_count": score
+        }
+        for pid, score in ranked
+    ]
+
+    return {
+        "query": query,
+        "matched_product": {
+            "product_id": best_match,
+            "title": G.nodes[best_match]["title"],
+            "match_score": highest_score
+        },
+        "recommendations": recommendations
+    }
