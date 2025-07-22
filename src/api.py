@@ -1,9 +1,12 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Query
 import networkx as nx
 import pandas as pd
 import shutil
 import subprocess
 import uuid
+from typing import List
+from fuzzywuzzy import fuzz
+from statistics import mean
 
 from src.build_graph import build_knowledge_graph
 from src import extract_entities, normalize_entities
@@ -107,4 +110,48 @@ def graph_stats():
         "products": product_count,
         "entities": entity_count,
         "edges": edge_count
+    }
+
+def is_similar(a, b, threshold=0.8):
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio() >= threshold
+
+@app.get("/search_by_feature")
+def search_by_feature(feature: str, limit: int = 10):
+    matches = []
+    for node_id, data in G.nodes(data=True):
+        if data["type"] == "entity":
+            score = fuzz.partial_ratio(feature.lower(), data["label"].lower())
+            if score > 80:
+                matches.append((node_id, data["label"], score))
+
+    product_scores = {}
+    for entity_node, label, score in matches:
+        connected_products = [
+            (neighbor, G.nodes[neighbor]["title"])
+            for neighbor in G.neighbors(entity_node)
+            if G.nodes[neighbor]["type"] == "product"
+        ]
+        for pid, title in connected_products:
+            if pid not in product_scores:
+                product_scores[pid] = {
+                    "product_id": pid,
+                    "product_title": title,
+                    "matched_entities": [],
+                    "raw_scores": []
+                }
+            product_scores[pid]["matched_entities"].append(label)
+            product_scores[pid]["raw_scores"].append(score)
+
+    # Compute average of top 5 scores for each product (but keep all matched_entities)
+    for data in product_scores.values():
+        top_scores = sorted(data["raw_scores"], reverse=True)[:5]
+        data["avg_score"] = round(mean(top_scores), 2)
+
+    # Sort by average score
+    sorted_results = sorted(product_scores.values(), key=lambda x: x["avg_score"], reverse=True)
+
+    return {
+        "query": feature,
+        "matches": sorted_results[:limit],
+        "count": len(sorted_results)
     }
