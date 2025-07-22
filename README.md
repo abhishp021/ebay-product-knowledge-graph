@@ -76,6 +76,83 @@ docker run -p 8000:8000 product-kg-api
 
 ## 📤 API Usage
 
+### 🔍 Feature-Based Search & Recommendations
+
+#### `/search_by_feature?feature=<query>`
+
+Performs a fuzzy search over normalized product features (entities) and returns matching products.
+
+#### ✅ Input:
+
+* `feature`: A search string (e.g., `iphone`, `13`, `128`)
+
+##### 📦 Output:
+
+```json
+{
+  "query": "13",
+  "matches": [
+    {
+      "product_id": "product_1",
+      "product_title": "Apple iPhone 13 Pro Max",
+      "matched_entities": ["13", "Iphone 13"],
+      "raw_scores": [100, 100],
+      "avg_score": 100
+    },
+    {
+      "product_id": "product_5",
+      "product_title": "Dell XPS 13 Laptop",
+      "matched_entities": ["Dell Xps 13 Laptop", "Dell Xps 13"],
+      "raw_scores": [100, 100],
+      "avg_score": 100
+    }
+  ],
+  "count": 2
+}
+```
+
+* Matches are ranked by **average fuzzy score of top-5 entity matches**.
+* Repeats from same product are grouped.
+
+---
+
+### 🤝 Recommendation Endpoint
+
+#### `/recommend?query=<search_string>`
+
+Given a product search query, returns similar products **based on shared entities (features)**.
+
+##### ✅ Input:
+
+* `query`: Search string matching a product (e.g., `"iphone"` or `"dell"`)
+
+##### 📦 Output:
+
+```json
+{
+  "query": "13",
+  "matched_product": {
+    "product_id": "product_1",
+    "title": "Apple iPhone 13 Pro Max",
+    "match_score": 100
+  },
+  "recommendations": [
+    {
+      "product_id": "product_5",
+      "title": "Dell XPS 13 Laptop",
+      "shared_entities": ["13"],
+      "score": 1
+    }
+  ]
+}
+```
+
+* Returns products connected via **shared entities** in the knowledge graph.
+* Scoring is based on number of shared entities.
+* If no similar products exist, `recommendations` will be empty.
+
+---
+
 ### Upload a CSV
 
 **Endpoint:** `POST /upload/`

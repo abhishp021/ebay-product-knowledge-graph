@@ -56,6 +56,5 @@ def draw_graph(G, limit=50):
     plt.show()
 
 if __name__ == "__main__":
-    # graph = build_knowledge_graph("data/processed/normalized_entities.csv")
     graph = build_knowledge_graph("data/processed/normalized_entities.json")
     draw_graph(graph)
