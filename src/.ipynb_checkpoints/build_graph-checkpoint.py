@@ -55,7 +55,40 @@ def draw_graph(G, limit=50):
     plt.title("Product Knowledge Graph")
     plt.show()
 
+def compute_centrality_measures(G: nx.Graph):
+    degree_centrality = nx.degree_centrality(G)
+    betweenness_centrality = nx.betweenness_centrality(G)
+    eigenvector_centrality = nx.eigenvector_centrality(G, max_iter=500)
+
+    centrality_data = []
+
+    for node in G.nodes(data=True):
+        node_id = node[0]
+        node_type = node[1]['type']
+        node_label = node[1].get('title') or node[1].get('label') or node_id
+
+        centrality_data.append({
+            "node_id": node_id,
+            "type": node_type,
+            "label": node_label,
+            "degree_centrality": degree_centrality.get(node_id, 0),
+            "betweenness_centrality": betweenness_centrality.get(node_id, 0),
+            "eigenvector_centrality": eigenvector_centrality.get(node_id, 0)
+        })
+
+    df = pd.DataFrame(centrality_data)
+    df.sort_values(by="degree_centrality", ascending=False, inplace=True)
+
+    output_dir = Path("outputs/analytics")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_dir / "centrality_analysis.csv", index=False)
+
+    print("✅ Centrality analysis complete. Results saved to outputs/analytics/centrality_analysis.csv")
+
+    return df
+
 if __name__ == "__main__":
-    # graph = build_knowledge_graph("data/processed/normalized_entities.csv")
     graph = build_knowledge_graph("data/processed/normalized_entities.json")
+    centrality_df = compute_centrality_measures(graph)
+    print(centrality_df.head(10))  # top 10 most central nodes
     draw_graph(graph)
