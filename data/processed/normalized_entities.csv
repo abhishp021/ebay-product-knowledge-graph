@@ -1,0 +1,6 @@
+id,title,normalized_entities
+1,Apple iPhone 13 Pro Max,"['Apple', '13', 'Iphone 13', '256']"
+2,Samsung Galaxy S21 Ultra,"['128', 'gb', 'phantom black', 'Samsung Galaxy S21 Ultra']"
+3,Nike Air Zoom Pegasus 39,"['39', 'Nike Air Zoom Pegasus', '10']"
+4,Sony WH-1000XM5 Headphones,"['Wireless', 'Sony']"
+5,Dell XPS 13 Laptop,"['512', 'Ram', '16', 'Intel', 'Dell Xps 13 Laptop', 'Dell Xps 13']"

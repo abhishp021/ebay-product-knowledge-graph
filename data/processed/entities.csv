@@ -1,0 +1,6 @@
+id,title,entities
+1,Apple iPhone 13 Pro Max,"[('Apple', 'ORG'), ('13', 'CARDINAL'), ('Apple', 'ORG'), ('iPhone 13', 'PRODUCT'), ('256', 'CARDINAL')]"
+2,Samsung Galaxy S21 Ultra,"[('Samsung Galaxy S21 Ultra', 'ORG'), ('Samsung Galaxy S21 Ultra', 'PERSON'), ('128', 'CARDINAL'), ('GB', 'GPE'), ('Phantom Black', 'GPE'), ('108MP', 'DATE')]"
+3,Nike Air Zoom Pegasus 39,"[('Nike Air Zoom Pegasus', 'ORG'), ('39', 'CARDINAL'), ('10', 'CARDINAL')]"
+4,Sony WH-1000XM5 Headphones,"[('Sony', 'ORG'), ('Sony', 'ORG'), ('Wireless', 'ORG')]"
+5,Dell XPS 13 Laptop,"[('Dell XPS 13 Laptop', 'ORG'), ('Dell XPS 13', 'ORG'), ('Intel', 'ORG'), ('16', 'CARDINAL'), ('RAM', 'ORG'), ('512', 'CARDINAL'), ('Windows 11 Home', 'LAW')]"

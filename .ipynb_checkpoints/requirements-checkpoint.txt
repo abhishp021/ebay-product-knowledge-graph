@@ -1,0 +1,10 @@
+pandas
+spacy
+tqdm
+networkx
+scikit-learn
+matplotlib
+ipykernel
+fastapi
+uvicorn
+python-multipart

@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "title": "Apple iPhone 13 Pro Max",
+    "normalized_entities": [
+      "Apple",
+      "13",
+      "Iphone 13",
+      "256"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Samsung Galaxy S21 Ultra",
+    "normalized_entities": [
+      "128",
+      "gb",
+      "phantom black",
+      "Samsung Galaxy S21 Ultra"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Nike Air Zoom Pegasus 39",
+    "normalized_entities": [
+      "39",
+      "Nike Air Zoom Pegasus",
+      "10"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Sony WH-1000XM5 Headphones",
+    "normalized_entities": [
+      "Wireless",
+      "Sony"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Dell XPS 13 Laptop",
+    "normalized_entities": [
+      "512",
+      "Ram",
+      "16",
+      "Intel",
+      "Dell Xps 13 Laptop",
+      "Dell Xps 13"
+    ]
+  }
+]
